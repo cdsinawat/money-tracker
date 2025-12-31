@@ -191,25 +191,29 @@ function toggleDark() {
 
 /* submit via iframe */
 function postData(data) {
-  const form = document.createElement("form");
-  form.action = URL;
-  form.method = "POST";
-  form.target = "hiddenFrame";
-
-  for (const k in data) {
-    const i = document.createElement("input");
-    i.type = "hidden";
-    i.name = k;
-    i.value = data[k];
-    form.appendChild(i);
-  }
-
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-
   showStatus("Saving...");
+
+  fetch(URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.success) {
+      showStatus("✅ Saved", "green");
+      setToday();
+    } else {
+      showStatus("❌ Failed", "red");
+    }
+  })
+  .catch(() => {
+    showStatus("❌ Network error", "red");
+  });
 }
+
 
 /* listen result */
 const iframe = document.querySelector("iframe[name='hiddenFrame']");
@@ -256,3 +260,4 @@ function submitExpense() {
 
 </body>
 </html>
+
