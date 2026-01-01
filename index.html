@@ -9,11 +9,11 @@
 
 :root {
   --bg:#f2f2f2; --card:#fff; --text:#222; --muted:#777;
-  --green:#2ecc71; --red:#e74c3c; --tab:#e5e5e5; --tab-active:#222;
+  --green:#2ecc71; --red:#e74c3c; --tab:#e5e5e5; --tab-active:#222; --text-active:white;
 }
 body.dark {
   --bg:#121212; --card:#1e1e1e; --text:#f1f1f1; --muted:#aaa;
-  --tab:#2a2a2a; --tab-active:#ffffff;
+  --tab:#2a2a2a; --tab-active:#ffffff; --text-active:#1e1e1e;--text-card:#f1f1f1;
 }
 body {
   margin:0; font-family:system-ui,sans-serif;
@@ -35,8 +35,12 @@ body {
 .tab {
   flex:1; padding:14px; border:none; background:none;
   font-size:16px; font-weight:600; cursor:pointer;
+  color:var(--text-card); 
 }
-.tab.active { background:var(--tab-active); color:white; }
+.tab.active { 
+background:var(--tab-active); 
+color:var(--text-active); 
+}
 
 .card {
   background:var(--card); border-radius:18px;
@@ -261,7 +265,6 @@ function submitExpense() {
 
 </body>
 </html>
-
 
 
 
