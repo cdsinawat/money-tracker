@@ -9,70 +9,117 @@
 
 :root {
   --bg:#f2f2f2; --card:#fff; --text:#222; --muted:#777;
-  --green:#2ecc71; --red:#e74c3c; --tab:#e5e5e5; --tab-active:#222; --text-active:white;
+  --green:#2ecc71; --red:#e74c3c; --tab:#e5e5e5;
+  --tab-active:#222; --text-active:white;
 }
 body.dark {
-  --bg:#121212; --card:#1e1e1e; --text:#f1f1f1; --muted:#aaa;
-  --tab:#2a2a2a; --tab-active:#ffffff; --text-active:#1e1e1e;--text-card:#f1f1f1;
+  --bg:#121212; --card:#1e1e1e; --text:#f1f1f1;
+  --muted:#aaa; --tab:#2a2a2a;
+  --tab-active:#ffffff; --text-active:#1e1e1e;
 }
+
 body {
-  margin:0; font-family:system-ui,sans-serif;
-  background:var(--bg); color:var(--text);
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
+
 .container {
-  max-width:640px; margin:auto; padding:20px;
+  max-width:640px;
+  margin:auto;
+  padding:20px;
 }
+
 .header {
-  display:flex; justify-content:space-between; align-items:center;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-.title { font-size:22px; font-weight:700; }
-.toggle { cursor:pointer; font-size:18px; }
+
+.title {
+  font-size:22px;
+  font-weight:700;
+}
+
+.toggle {
+  cursor:pointer;
+  font-size:18px;
+}
 
 .tabs {
-  display:flex; background:var(--tab); border-radius:14px;
-  overflow:hidden; margin-top:14px;
+  display:flex;
+  background:var(--tab);
+  border-radius:14px;
+  overflow:hidden;
+  margin-top:14px;
 }
+
 .tab {
-  flex:1; padding:14px; border:none; background:none;
-  font-size:16px; font-weight:600; cursor:pointer;
-  color:var(--text-card); 
+  flex:1;
+  padding:14px;
+  border:none;
+  background:none;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
 }
-.tab.active { 
-background:var(--tab-active); 
-color:var(--text-active); 
+
+.tab.active {
+  background:var(--tab-active);
+  color:var(--text-active);
 }
 
 .card {
-  background:var(--card); border-radius:18px;
-  padding:24px; margin-top:18px;
+  background:var(--card);
+  border-radius:18px;
+  padding:24px;
+  margin-top:18px;
   box-shadow:0 10px 24px rgba(0,0,0,.08);
 }
+
 .form { display:none; }
 .form.active { display:block; }
 
-.field { margin-bottom:18px; position:relative; }
-.field label {
-  position:absolute; top:-8px; left:12px;
-  background:var(--card); padding:0 6px;
-  font-size:13px; color:var(--muted);
+.field {
+  margin-bottom:18px;
+  position:relative;
 }
-.field input, .field select {
-  width:100%; padding:12px; border-radius:12px;
-  border:1px solid #ccc; font-size:16px;
-  background:transparent; color:var(--text);
+
+.field label {
+  position:absolute;
+  top:-8px;
+  left:12px;
+  background:var(--card);
+  padding:0 6px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.field input,
+.field select {
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #ccc;
+  font-size:16px;
+  background:transparent;
+  color:var(--text);
 }
 
 button.save {
-  width:100%; padding:14px; border-radius:14px;
-  border:none; font-size:16px; font-weight:700;
-  color:white; cursor:pointer;
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  font-size:16px;
+  font-weight:700;
+  color:white;
+  cursor:pointer;
 }
+
 .income { background:var(--green); }
 .expense { background:var(--red); }
-
-.maintenance {
-  text-align:center; color:var(--muted); padding:40px 10px;
-}
 
 #statusMsg {
   margin-top:10px;
@@ -153,22 +200,18 @@ button.save {
 
   <!-- SAVING -->
   <div id="saving" class="card form">
-    <div class="maintenance">
-      <h2>🚧 Saving</h2>
-      <p>Under maintenance</p>
-    </div>
+    <p style="text-align:center;color:gray">
+      🚧 Saving under maintenance
+    </p>
   </div>
 
   <div id="statusMsg"></div>
 </div>
 
-<!-- hidden iframe -->
-<iframe name="hiddenFrame" style="display:none;"></iframe>
-
 <script>
 const URL = "https://script.google.com/macros/s/AKfycbz52G5E2apNeXPWlI6COIoCfteQB7SfvPd6x6_w123m/exec";
 
-/* today (local, Thailand-safe) */
+/* today (Thailand-safe) */
 function setToday() {
   const d = new Date();
   const y = d.getFullYear();
@@ -180,7 +223,6 @@ function setToday() {
 }
 window.onload = setToday;
 
-/* tabs */
 function showTab(id, btn) {
   document.querySelectorAll(".form").forEach(f=>f.classList.remove("active"));
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
@@ -188,58 +230,34 @@ function showTab(id, btn) {
   btn.classList.add("active");
 }
 
-/* dark */
 function toggleDark() {
   document.body.classList.toggle("dark");
 }
-
-/* submit via iframe */
-function postData(data) {
-  showStatus("Saving...");
-
-  fetch(URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(res => {
-    if (res.success) {
-      showStatus("✅ Saved", "green");
-      setToday();
-    } else {
-      showStatus("❌ Failed", "red");
-    }
-  })
-  .catch(() => {
-    showStatus("❌ Network error", "red");
-  });
-}
-
-
-
-/* listen result */
-const iframe = document.querySelector("iframe[name='hiddenFrame']");
-iframe.onload = () => {
-  try {
-    const txt = iframe.contentDocument.body.innerText.trim();
-    if (txt === "SUCCESS") {
-      showStatus("✅ Saved", "green");
-      setToday();
-    } else {
-      showStatus("❌ Failed", "red");
-    }
-  } catch {
-    showStatus("❌ Failed", "red");
-  }
-};
 
 function showStatus(msg, color="#333") {
   const el = document.getElementById("statusMsg");
   el.innerText = msg;
   el.style.color = color;
+}
+
+/* 🔥 CORS-SAFE SUBMIT */
+function postData(data) {
+  showStatus("Saving...");
+
+  const formData = new URLSearchParams(data);
+
+  fetch(URL, {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.text())
+  .then(() => {
+    showStatus("✅ Saved", "green");
+    setToday();
+  })
+  .catch(() => {
+    showStatus("❌ Network error", "red");
+  });
 }
 
 function submitIncome() {
@@ -265,9 +283,3 @@ function submitExpense() {
 
 </body>
 </html>
-
-
-
-
-
-
