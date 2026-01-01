@@ -8,14 +8,25 @@
 * { box-sizing: border-box; }
 
 :root {
-  --bg:#f2f2f2; --card:#fff; --text:#222; --muted:#777;
-  --green:#2ecc71; --red:#e74c3c; --tab:#e5e5e5;
-  --tab-active:#222; --text-active:white;
+  --bg:#f2f2f2;
+  --card:#ffffff;
+  --text:#222;
+  --muted:#777;
+  --green:#2ecc71;
+  --red:#e74c3c;
+  --tab:#e5e5e5;
+  --tab-active:#222;
+  --text-active:white;
 }
+
 body.dark {
-  --bg:#121212; --card:#1e1e1e; --text:#f1f1f1;
-  --muted:#aaa; --tab:#2a2a2a;
-  --tab-active:#ffffff; --text-active:#1e1e1e;
+  --bg:#121212;
+  --card:#1e1e1e;
+  --text:#f1f1f1;
+  --muted:#aaa;
+  --tab:#2a2a2a;
+  --tab-active:#ffffff;
+  --text-active:#1e1e1e;
 }
 
 body {
@@ -206,12 +217,13 @@ button.save {
   </div>
 
   <div id="statusMsg"></div>
+
 </div>
 
 <script>
 const URL = "https://script.google.com/macros/s/AKfycbz52G5E2apNeXPWlI6COIoCfteQB7SfvPd6x6_w123m/exec";
 
-/* today (Thailand-safe) */
+/* Thailand-safe today */
 function setToday() {
   const d = new Date();
   const y = d.getFullYear();
@@ -240,20 +252,25 @@ function showStatus(msg, color="#333") {
   el.style.color = color;
 }
 
-/* 🔥 CORS-SAFE SUBMIT */
+/* FormData submit (NO CORS) */
 function postData(data) {
   showStatus("Saving...");
 
-  const formData = new URLSearchParams(data);
+  const formData = new FormData();
+  for (const k in data) formData.append(k, data[k]);
 
   fetch(URL, {
     method: "POST",
     body: formData
   })
-  .then(res => res.text())
-  .then(() => {
-    showStatus("✅ Saved", "green");
-    setToday();
+  .then(res => res.json())
+  .then(res => {
+    if (res.result === "success") {
+      showStatus("✅ Saved", "green");
+      setToday();
+    } else {
+      showStatus("❌ Failed", "red");
+    }
   })
   .catch(() => {
     showStatus("❌ Network error", "red");
